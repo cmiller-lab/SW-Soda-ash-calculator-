@@ -3,23 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#17365d">
+<meta name="theme-color" content="#0b4f8a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Pool Tools">
+<meta name="apple-mobile-web-app-title" content="SeaWorld Dose">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
-<title>Pool Tools</title>
+<title>SeaWorld Dosage Calculators</title>
 <style>
 :root{--navy:#17365d;--blue:#d9eaf7;--green:#e2f0d9;--red:#fce4d6;--ink:#1f2937;--muted:#667085;--border:#cfd8e3;--white:#fff;--light:#f7fafc;--error:#b42318;--errorbg:#fef3f2}
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#eef5fb,#f9fbfd);color:var(--ink);min-height:100vh}
 .wrap{width:min(980px,calc(100% - 24px));margin:18px auto;padding-bottom:env(safe-area-inset-bottom)}
+
+.hero{
+background:
+radial-gradient(circle at 12% 28%, rgba(255,255,255,.20) 0 10px, transparent 11px),
+radial-gradient(circle at 82% 35%, rgba(255,255,255,.15) 0 8px, transparent 9px),
+radial-gradient(circle at 65% 70%, rgba(255,255,255,.12) 0 14px, transparent 15px),
+linear-gradient(180deg,#0b4f8a,#17365d);
+position:relative;
+overflow:hidden;
+}
+.hero:after{
+content:"";
+position:absolute;
+left:-10%;
+right:-10%;
+bottom:-18px;
+height:60px;
+background:
+radial-gradient(40px 20px at 20px 20px,#5fb6e5 49%,transparent 51%) repeat-x;
+background-size:80px 40px;
+opacity:.45;
+}
+.hero h1:before{
+content:"🌊 ";
+}
+
 .hero{background:var(--navy);color:#fff;border-radius:18px 18px 0 0;padding:22px}
 .hero h1{margin:0 0 6px;font-size:clamp(25px,5vw,38px)}
 .hero p{margin:0;opacity:.9}
-.tabs{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border)}
 .tab{padding:15px;border:0;background:#edf2f7;color:var(--navy);font-weight:800;font-size:16px;cursor:pointer}
 .tab.active{background:#fff;box-shadow:inset 0 -4px 0 var(--navy)}
 .panel{display:none;background:#fff;border:1px solid var(--border);border-top:0;border-radius:0 0 18px 18px;padding:18px;box-shadow:0 14px 35px rgba(23,54,93,.12)}
@@ -51,16 +77,24 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 .tile b{display:block;font-size:20px;margin-top:5px}
 .note{margin-top:18px;background:var(--red);border:1px solid #efb6a4;border-radius:12px;padding:14px 16px;line-height:1.5}
 .formula{margin-top:14px;padding:12px 14px;background:#f8fafc;border-left:4px solid var(--navy);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;overflow:auto}
+
+.alert{margin-top:14px;border-radius:12px;padding:14px 16px;line-height:1.45;font-weight:700;display:none}
+.alert.show{display:block}
+.alert.caution{background:#fff7e6;border:1px solid #f3c969;color:#7a4b00}
+.alert.warning{background:#fef3f2;border:1px solid #fda29b;color:#b42318}
+.alert.info{background:#eef6ff;border:1px solid #b2ccff;color:#1849a9}
+
 .footer{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
 </style>
 </head>
 <body>
 <div class="wrap">
-<section class="hero"><h1>Pool Tools</h1><p>Soda ash dosage and manual chlorine feed calculators.</p></section>
+<section class="hero"><h1>SeaWorld Dosage Calculators</h1><p>Water chemistry calculators for SeaWorld aquatic systems.</p></section>
 
 <div class="tabs">
 <button class="tab active" id="tabSoda" onclick="showTab('soda')">Soda Ash</button>
 <button class="tab" id="tabFC" onclick="showTab('fc')">Chlorine Feed</button>
+<button class="tab" id="tabCYA" onclick="showTab('cya')">CYA Dosing</button>
 </div>
 
 <section class="panel active" id="sodaPanel">
@@ -152,7 +186,12 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 <option value="21">Pearl</option>
 <option value="22">Tropical River/Resort Pool</option>
 <option value="23">Freshwater Oasis</option></select></div>
-<div class="field"><label for="desiredFC">Desired FC Increase (ppm)</label><input id="desiredFC" type="number" min="0.1" max="20" step="0.1" value="3.0" inputmode="decimal"></div>
+<div class="field">
+<label for="desiredFC">Desired FC Increase (ppm)</label>
+<input id="desiredFC" type="number" min="0.1" max="60" step="0.1" value="3.0" inputmode="decimal">
+<div class="help">Supported calculation range: 0.1–60.0 ppm</div>
+<div class="error" id="fcError">Enter an FC increase between 0.1 and 60.0 ppm.</div>
+</div>
 <div class="readout"><span>Pool number</span><strong id="fcId">501</strong></div>
 <div class="readout"><span>Volume</span><strong id="fcVolume">511,740 gal</strong></div>
 <div class="readout"><span>PPM per 5-min feed</span><strong id="fcRate">0.42 ppm</strong></div>
@@ -163,7 +202,7 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 <div class="card">
 <h2>Required Manual Feed</h2>
 <div class="card-body">
-<div class="result"><small>Manual feed time</small><div class="big" id="fcTime">35 min 43 sec</div><div class="sub" id="fcDecimal">35.71 minutes</div></div>
+<div class="result" id="fcResult"><small>Manual feed time</small><div class="big" id="fcTime">35 min 43 sec</div><div class="sub" id="fcDecimal">35.71 minutes</div></div>
 <div class="tiles">
 <div class="tile"><span>Desired FC rise</span><b id="fcDesiredTile">3.0 ppm</b></div>
 <div class="tile"><span>Feed cycles</span><b id="fcCycles">7.14</b></div>
@@ -174,7 +213,75 @@ input.invalid{border-color:var(--error);background:var(--errorbg)}
 </div>
 </div>
 <div class="formula" id="fcFormula"></div>
-<div class="note"><strong>Assumption:</strong> FC gain scales linearly with feed duration and feed rate remains constant. Actual FC rise may be reduced by chlorine demand, sunlight, mixing, or concurrent chemical feed.</div>
+<div class="note"><strong>Assumption:</strong> FC gain scales linearly with feed duration and feed rate remains constant. Actual FC rise may be reduced by chlorine demand, sunlight, mixing, or concurrent chemical feed. High-target calculations should be staged and verified.</div>
+</section>
+
+
+<section class="panel" id="cyaPanel">
+<div class="grid">
+<div class="card">
+<h2>CYA Dosing Inputs</h2>
+<div class="card-body">
+<div class="field"><label for="cyaPool">Body of Water</label><select id="cyaPool"><option value="0" selected>501 — Cutback Cove</option>
+<option value="1">502 — Big Surf Shores</option>
+<option value="2">503 — Omaka Rocka</option>
+<option value="3">504 — Katas Kookaburra</option>
+<option value="4">505 — Roa&#x27;s Rapids</option>
+<option value="5">506 — Whanau Way</option>
+<option value="6">507 — Walkabout Waters</option>
+<option value="7">508 — Ray Rush/Whahalla Wave</option>
+<option value="8">509 — Loggerhead/Tassie</option>
+<option value="9">510 — Dolphin Plunge</option>
+<option value="10">520 — Ihu Breakaway Falls</option>
+<option value="11">530 — Taumata Racer</option>
+<option value="12">540 — KareKareKurl</option>
+<option value="13">550 — Riptide</option>
+<option value="14">Infinity Falls 1</option>
+<option value="15">Infinity Falls 2</option>
+<option value="16">Kraken</option>
+<option value="17">Manta Pond</option>
+<option value="18">Main Gate</option>
+<option value="19">Journey to Atlantis</option>
+<option value="20">Sesame</option>
+<option value="21">Pearl</option>
+<option value="22">Tropical River/Resort Pool</option>
+<option value="23">Freshwater Oasis</option></select></div>
+<div class="field">
+<label for="currentCYA">Current CYA (ppm)</label>
+<input id="currentCYA" type="number" min="0" max="200" step="0.1" value="7.0" inputmode="decimal">
+<div class="help">Supported calculation range: 0–200 ppm</div>
+<div class="error" id="cyaError">Enter a CYA value between 0 and 200 ppm.</div>
+</div>
+<div class="field"><label>Goal CYA</label><input value="14 ppm" readonly></div>
+<div class="readout"><span>Pool number</span><strong id="cyaId">501</strong></div>
+<div class="readout"><span>Volume</span><strong id="cyaVolume">511,740 gal</strong></div>
+<div class="readout"><span>CYA increase needed</span><strong id="cyaIncrease">7.0 ppm</strong></div>
+<div class="readout"><span>Product per 1 ppm</span><strong id="cyaPerPpm">4.26 lb</strong></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Estimated CYA Dose</h2>
+<div class="card-body">
+<div class="result" id="cyaResult">
+<small>Cyanuric acid required</small>
+<div class="big" id="cyaDose">29.9 lb</div>
+<div class="sub" id="cyaMixed">29 lb 14.3 oz</div>
+</div>
+<div class="tiles">
+<div class="tile"><span>Goal CYA</span><b>14 ppm</b></div>
+<div class="tile"><span>Increase needed</span><b id="cyaNeededTile">7.0 ppm</b></div>
+<div class="tile"><span>25% staged dose</span><b id="cya25">7.5 lb</b></div>
+<div class="tile"><span>50-lb bags</span><b id="cyaBags">0.60</b></div>
+</div>
+<div class="alert warning" id="cyaWarning">Warning: At 7 ppm CYA or below, chlorine sensor calibration WILL be affected when dosing. A follow-up chlorine sensor calibration is required after dosing.</div>
+<div class="alert caution" id="cyaCaution">Caution: At CYA levels above 7 ppm through 10 ppm, chlorine sensor calibration might be affected.</div>
+<div class="alert info" id="cyaInfo"></div>
+</div>
+</div>
+</div>
+<div class="formula" id="cyaFormula"></div>
+<div class="note"><strong>Dosing basis:</strong> Pure cyanuric acid is calculated at approximately 0.0833 lb per 10,000 gallons for each 1 ppm increase. Product purity and application method may require adjustment.</div>
 </section>
 
 <div class="footer">Offline-capable PWA • Add to Home Screen from Safari</div>
@@ -193,8 +300,10 @@ function fmtTime(mins){
 window.showTab=function(name){
   document.getElementById('sodaPanel').classList.toggle('active',name==='soda');
   document.getElementById('fcPanel').classList.toggle('active',name==='fc');
+  document.getElementById('cyaPanel').classList.toggle('active',name==='cya');
   document.getElementById('tabSoda').classList.toggle('active',name==='soda');
   document.getElementById('tabFC').classList.toggle('active',name==='fc');
+  document.getElementById('tabCYA').classList.toggle('active',name==='cya');
   localStorage.setItem('poolToolsTab',name);
 };
 
@@ -258,22 +367,132 @@ function updateSoda(){
   document.getElementById('sodaFormula').textContent='Dose = ('+p.volume.toLocaleString()+' ÷ 10,000) × 3.0 × ((7.6 − '+ph.toFixed(1)+') ÷ 1.6) = '+dose.toFixed(2)+' lb';
 }
 
+function setInvalidFC(message){
+  document.getElementById('desiredFC').classList.add('invalid');
+  document.getElementById('fcError').textContent=message;
+  document.getElementById('fcError').classList.add('show');
+  document.getElementById('fcResult').classList.add('invalid');
+  document.getElementById('fcTime').textContent='Invalid FC';
+  document.getElementById('fcDecimal').textContent='No feed time calculated';
+  document.getElementById('fcDesiredTile').textContent='—';
+  document.getElementById('fcCycles').textContent='—';
+  document.getElementById('fcHalf').textContent='—';
+  document.getElementById('fcFormula').textContent='Enter a valid FC increase to calculate feed time.';
+}
+
+function clearInvalidFC(){
+  document.getElementById('desiredFC').classList.remove('invalid');
+  document.getElementById('fcError').classList.remove('show');
+  document.getElementById('fcResult').classList.remove('invalid');
+}
+
 function updateFC(){
   const p=selectedPool('fcPool');
-  let desired=parseFloat(document.getElementById('desiredFC').value);
-  if(!isFinite(desired))desired=3.0;
-  desired=Math.max(.1,Math.min(20,desired));
-  const cycles=desired/p.fc5;
-  const mins=cycles*5;
+  const raw=document.getElementById('desiredFC').value.trim();
+  const desired=parseFloat(raw);
+
   document.getElementById('fcId').textContent=p.id;
   document.getElementById('fcVolume').textContent=p.volume.toLocaleString()+' gal';
   document.getElementById('fcRate').textContent=p.fc5.toFixed(2)+' ppm';
+
+  if(raw==='' || !isFinite(desired)){
+    setInvalidFC('Enter a numeric FC increase between 0.1 and 60.0 ppm.');
+    return;
+  }
+  if(desired<0.1 || desired>60){
+    setInvalidFC('Supported range is 0.1–60.0 ppm.');
+    return;
+  }
+
+  clearInvalidFC();
+  const cycles=desired/p.fc5;
+  const mins=cycles*5;
   document.getElementById('fcTime').textContent=fmtTime(mins);
   document.getElementById('fcDecimal').textContent=mins.toFixed(2)+' minutes';
   document.getElementById('fcDesiredTile').textContent=desired.toFixed(1)+' ppm';
   document.getElementById('fcCycles').textContent=cycles.toFixed(2);
   document.getElementById('fcHalf').textContent=fmtTime(mins/2);
   document.getElementById('fcFormula').textContent='Feed time = ('+desired.toFixed(2)+' ÷ '+p.fc5.toFixed(2)+') × 5 = '+mins.toFixed(2)+' minutes';
+}
+
+
+function hideCYAAlerts(){
+  ['cyaWarning','cyaCaution','cyaInfo'].forEach(function(id){
+    document.getElementById(id).classList.remove('show');
+  });
+}
+
+function setInvalidCYA(message){
+  document.getElementById('currentCYA').classList.add('invalid');
+  document.getElementById('cyaError').textContent=message;
+  document.getElementById('cyaError').classList.add('show');
+  document.getElementById('cyaResult').classList.add('invalid');
+  document.getElementById('cyaIncrease').textContent='—';
+  document.getElementById('cyaPerPpm').textContent='—';
+  document.getElementById('cyaDose').textContent='Invalid CYA';
+  document.getElementById('cyaMixed').textContent='No dose calculated';
+  document.getElementById('cyaNeededTile').textContent='—';
+  document.getElementById('cya25').textContent='—';
+  document.getElementById('cyaBags').textContent='—';
+  document.getElementById('cyaFormula').textContent='Enter a valid CYA test result to calculate a dose.';
+  hideCYAAlerts();
+}
+
+function clearInvalidCYA(){
+  document.getElementById('currentCYA').classList.remove('invalid');
+  document.getElementById('cyaError').classList.remove('show');
+  document.getElementById('cyaResult').classList.remove('invalid');
+}
+
+function updateCYA(){
+  const p=selectedPool('cyaPool');
+  const raw=document.getElementById('currentCYA').value.trim();
+  const current=parseFloat(raw);
+  const goal=14.0;
+
+  document.getElementById('cyaId').textContent=p.id;
+  document.getElementById('cyaVolume').textContent=p.volume.toLocaleString()+' gal';
+
+  if(raw==='' || !isFinite(current)){
+    setInvalidCYA('Enter a numeric CYA value between 0 and 200 ppm.');
+    return;
+  }
+  if(current<0 || current>200){
+    setInvalidCYA('Supported range is 0–200 ppm.');
+    return;
+  }
+
+  clearInvalidCYA();
+  hideCYAAlerts();
+
+  const perPpm=p.volume/120000;
+  const increase=Math.max(0,goal-current);
+  const dose=perPpm*increase;
+  const whole=Math.floor(dose);
+  const oz=(dose-whole)*16;
+
+  document.getElementById('cyaIncrease').textContent=increase.toFixed(1)+' ppm';
+  document.getElementById('cyaPerPpm').textContent=perPpm.toFixed(2)+' lb';
+  document.getElementById('cyaDose').textContent=dose.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
+  document.getElementById('cyaMixed').textContent=whole.toLocaleString()+' lb '+oz.toFixed(1)+' oz';
+  document.getElementById('cyaNeededTile').textContent=increase.toFixed(1)+' ppm';
+  document.getElementById('cya25').textContent=(dose*.25).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
+  document.getElementById('cyaBags').textContent=(dose/50).toFixed(2);
+  document.getElementById('cyaFormula').textContent='Dose = '+p.volume.toLocaleString()+' ÷ 120,000 × ('+goal.toFixed(1)+' − '+current.toFixed(1)+') = '+dose.toFixed(2)+' lb';
+
+  if(current<=7){
+    document.getElementById('cyaWarning').classList.add('show');
+  } else if(current<=10){
+    document.getElementById('cyaCaution').classList.add('show');
+  } else if(current>=goal){
+    const info=document.getElementById('cyaInfo');
+    info.textContent='No CYA addition is required. Current CYA is at or above the 14 ppm goal.';
+    info.classList.add('show');
+  } else {
+    const info=document.getElementById('cyaInfo');
+    info.textContent='CYA is below the 14 ppm goal. Dose shown will raise the pool to the target.';
+    info.classList.add('show');
+  }
 }
 
 ['sodaPool','currentPH'].forEach(id=>{

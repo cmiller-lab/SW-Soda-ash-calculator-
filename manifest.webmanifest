@@ -1,12 +1,12 @@
 {
-  "name": "Pool Tools",
-  "short_name": "Pool Tools",
-  "description": "Soda ash and manual chlorine feed calculators.",
+  "name": "SeaWorld Dosage Calculators",
+  "short_name": "SW Dosage",
+  "description": "Soda ash, chlorine feed, and CYA dosing calculators for SeaWorld aquatic systems.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef5fb",
-  "theme_color": "#17365d",
+  "theme_color": "#0b4f8a",
   "icons": [
     {
       "src": "icon-192.png",

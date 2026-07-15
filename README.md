@@ -1,10 +1,21 @@
-# Pool Tools PWA v5
+# SeaWorld Dosage Calculators PWA
 
-Changes:
-- Soda ash pH input now supports 4.0 through 7.6.
-- Values below 5.0 continue to change the calculated dose.
-- Invalid values such as 87 are rejected.
-- Invalid entries show an error and no dosage is calculated.
-- Service-worker cache updated to `pool-tools-v5`.
+Includes:
+- Soda Ash calculator
+- Manual Chlorine Feed calculator
+- CYA dosing calculator
+- CYA sensor-calibration alerts
+- SeaWorld-themed aquatic styling
+- Offline support after initial load
 
-Replace the existing GitHub repository root files with these files and commit to `main`.
+## Update the existing GitHub Pages site
+Replace the files in the repository root with:
+- index.html
+- manifest.webmanifest
+- service-worker.js
+- icon-192.png
+- icon-512.png
+
+Commit the changes to the `main` branch. GitHub Pages will republish automatically.
+
+The service-worker cache name is `seaworld-dosage-v8`, which forces installed copies to refresh after the hosted page is reopened in Safari.
