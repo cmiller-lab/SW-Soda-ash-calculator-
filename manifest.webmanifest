@@ -1,6 +1,7 @@
 {
-  "name": "Pool Soda Ash Calculator",
-  "short_name": "Soda Ash",
+  "name": "Pool Tools",
+  "short_name": "Pool Tools",
+  "description": "Soda ash and manual chlorine feed calculators.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

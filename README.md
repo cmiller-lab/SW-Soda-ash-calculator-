@@ -1,3 +1,10 @@
-Upload every file in this folder to a GitHub Pages or Cloudflare Pages site.
-On iPhone, open the hosted URL in Safari, tap Share, and choose Add to Home Screen.
-This version includes an iOS fallback that detects dropdown changes even when embedded previews fail to fire normal change events.
+# Pool Tools PWA v5
+
+Changes:
+- Soda ash pH input now supports 4.0 through 7.6.
+- Values below 5.0 continue to change the calculated dose.
+- Invalid values such as 87 are rejected.
+- Invalid entries show an error and no dosage is calculated.
+- Service-worker cache updated to `pool-tools-v5`.
+
+Replace the existing GitHub repository root files with these files and commit to `main`.

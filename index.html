@@ -2,60 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#17365d">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Soda Ash">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pool Tools">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Soda Ash Calculator</title>
+<link rel="icon" href="icon-192.png">
+<title>Pool Tools</title>
 <style>
-:root{--navy:#17365d;--blue:#d9eaf7;--light:#f4f8fb;--green:#e2f0d9;--red:#fce4d6;--ink:#1f2937;--muted:#667085;--border:#cfd8e3}
+:root{--navy:#17365d;--blue:#d9eaf7;--green:#e2f0d9;--red:#fce4d6;--ink:#1f2937;--muted:#667085;--border:#cfd8e3;--white:#fff;--light:#f7fafc;--error:#b42318;--errorbg:#fef3f2}
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#eef5fb,#f9fbfd);color:var(--ink)}
-.wrap{width:min(980px,calc(100% - 24px));margin:18px auto}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#eef5fb,#f9fbfd);color:var(--ink);min-height:100vh}
+.wrap{width:min(980px,calc(100% - 24px));margin:18px auto;padding-bottom:env(safe-area-inset-bottom)}
 .hero{background:var(--navy);color:#fff;border-radius:18px 18px 0 0;padding:22px}
-.hero h1{margin:0 0 8px;font-size:clamp(24px,5vw,38px)}
-.hero p{margin:0;opacity:.9;line-height:1.5}
-.panel{background:#fff;border:1px solid var(--border);border-top:0;border-radius:0 0 18px 18px;padding:18px;box-shadow:0 14px 35px rgba(23,54,93,.12)}
-.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.hero h1{margin:0 0 6px;font-size:clamp(25px,5vw,38px)}
+.hero p{margin:0;opacity:.9}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+.tab{padding:15px;border:0;background:#edf2f7;color:var(--navy);font-weight:800;font-size:16px;cursor:pointer}
+.tab.active{background:#fff;box-shadow:inset 0 -4px 0 var(--navy)}
+.panel{display:none;background:#fff;border:1px solid var(--border);border-top:0;border-radius:0 0 18px 18px;padding:18px;box-shadow:0 14px 35px rgba(23,54,93,.12)}
+.panel.active{display:block}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}
 @media(max-width:760px){.grid{grid-template-columns:1fr}}
 .card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff}
 .card h2{margin:0;padding:14px 16px;font-size:18px;background:var(--blue);color:var(--navy)}
 .card-body{padding:16px}
 .field{margin-bottom:16px}
 label{display:block;font-weight:700;margin-bottom:7px}
-select,input{display:block;width:100%;min-height:50px;border:1px solid #aeb9c6;border-radius:10px;padding:10px 12px;font-size:17px;background:#fff;color:var(--ink)}
-.readout{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #e6ebf0}
+select,input{width:100%;min-height:50px;border:1px solid #aeb9c6;border-radius:10px;padding:10px 12px;font-size:17px;background:#fff;color:var(--ink)}
+input.invalid{border-color:var(--error);background:var(--errorbg)}
+.help{font-size:13px;color:var(--muted);margin-top:6px}
+.error{display:none;margin-top:8px;padding:10px 12px;border-radius:9px;background:var(--errorbg);color:var(--error);font-weight:700;font-size:14px}
+.error.show{display:block}
+.readout{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e6ebf0}
 .readout:last-child{border-bottom:0}
 .readout span:first-child{color:var(--muted)}
 .readout strong{text-align:right}
-.dose{background:var(--green);border:1px solid #b7d7a8;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
-.dose small{display:block;color:#365314;font-weight:700;text-transform:uppercase}
-.dose .big{font-size:clamp(38px,9vw,62px);font-weight:800;color:#214e2f;margin:7px 0}
-.dose .sub{color:#315f3e}
-.stages{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stage{background:var(--light);border:1px solid var(--border);border-radius:12px;padding:13px}
-.stage b{display:block;font-size:20px;margin-top:5px}
-.formula{margin-top:14px;padding:12px 14px;background:#f8fafc;border-left:4px solid var(--navy);font-family:monospace;font-size:14px;overflow:auto}
-.warning{margin-top:20px;background:var(--red);border:1px solid #efb6a4;border-radius:12px;padding:14px 16px;line-height:1.5}
-.status{margin-top:10px;font-size:13px;color:var(--muted);text-align:center}
+.result{background:var(--green);border:1px solid #b7d7a8;border-radius:14px;padding:18px;text-align:center}
+.result.invalid{background:#f2f4f7;border-color:#d0d5dd}
+.result small{display:block;color:#365314;font-weight:800;text-transform:uppercase;letter-spacing:.03em}
+.result.invalid small,.result.invalid .big,.result.invalid .sub{color:#667085}
+.result .big{font-size:clamp(38px,9vw,62px);font-weight:800;color:#214e2f;margin:8px 0}
+.result .sub{color:#315f3e}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.tile{background:var(--light);border:1px solid var(--border);border-radius:12px;padding:13px}
+.tile b{display:block;font-size:20px;margin-top:5px}
+.note{margin-top:18px;background:var(--red);border:1px solid #efb6a4;border-radius:12px;padding:14px 16px;line-height:1.5}
+.formula{margin-top:14px;padding:12px 14px;background:#f8fafc;border-left:4px solid var(--navy);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;overflow:auto}
+.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
 </style>
 </head>
 <body>
 <div class="wrap">
-<section class="hero">
-<h1>Soda Ash Dosage Calculator</h1>
-<p>Select a body of water and enter the current pH. Goal pH is fixed at 7.6.</p>
-</section>
-<main class="panel">
+<section class="hero"><h1>Pool Tools</h1><p>Soda ash dosage and manual chlorine feed calculators.</p></section>
+
+<div class="tabs">
+<button class="tab active" id="tabSoda" onclick="showTab('soda')">Soda Ash</button>
+<button class="tab" id="tabFC" onclick="showTab('fc')">Chlorine Feed</button>
+</div>
+
+<section class="panel active" id="sodaPanel">
 <div class="grid">
-<section class="card">
-<h2>Inputs</h2>
+<div class="card">
+<h2>Soda Ash Inputs</h2>
 <div class="card-body">
-<div class="field">
-<label for="pool">Body of Water</label>
-<select id="pool"><option value="0" selected>501 — Cutback Cove</option>
+<div class="field"><label for="sodaPool">Body of Water</label><select id="sodaPool"><option value="0" selected>501 — Cutback Cove</option>
 <option value="1">502 — Big Surf Shores</option>
 <option value="2">503 — Omaka Rocka</option>
 <option value="3">504 — Katas Kookaburra</option>
@@ -78,117 +91,214 @@ select,input{display:block;width:100%;min-height:50px;border:1px solid #aeb9c6;b
 <option value="20">Sesame</option>
 <option value="21">Pearl</option>
 <option value="22">Tropical River/Resort Pool</option>
-<option value="23">Freshwater Oasis</option></select>
-</div>
+<option value="23">Freshwater Oasis</option></select></div>
 <div class="field">
-<label for="ph">Current pH</label>
-<input id="ph" type="number" min="5.0" max="7.6" step="0.1" value="6.0" inputmode="decimal">
+<label for="currentPH">Current pH</label>
+<input id="currentPH" type="number" min="4.0" max="7.6" step="0.1" value="6.0" inputmode="decimal">
+<div class="help">Supported calculation range: pH 4.0–7.6</div>
+<div class="error" id="phError">Enter a pH between 4.0 and 7.6.</div>
 </div>
-<div class="field">
-<label for="goal">Goal pH</label>
-<input id="goal" type="text" value="7.6" readonly>
+<div class="field"><label>Goal pH</label><input value="7.6" readonly></div>
+<div class="readout"><span>Pool number</span><strong id="sodaId">501</strong></div>
+<div class="readout"><span>Volume</span><strong id="sodaVolume">511,740 gal</strong></div>
+<div class="readout"><span>pH increase</span><strong id="phShift">1.6 units</strong></div>
+<div class="readout"><span>Calculated rate</span><strong id="sodaRate">3.00 lb/10k gal</strong></div>
 </div>
-<div class="readout"><span>Pool number</span><strong id="poolId">501</strong></div>
-<div class="readout"><span>Volume</span><strong id="volume">511,740 gal</strong></div>
-<div class="readout"><span>pH increase</span><strong id="shift">1.6 units</strong></div>
-<div class="readout"><span>Calculated rate</span><strong id="rate">3.00 lb/10k gal</strong></div>
 </div>
+
+<div class="card">
+<h2>Estimated Soda Ash Dose</h2>
+<div class="card-body">
+<div class="result" id="sodaResult"><small>Soda ash required</small><div class="big" id="sodaDose">153.5 lb</div><div class="sub" id="sodaMixed">153 lb 8.4 oz</div></div>
+<div class="tiles">
+<div class="tile"><span>25% staged addition</span><b id="soda25">38.4 lb</b></div>
+<div class="tile"><span>50% staged addition</span><b id="soda50">76.8 lb</b></div>
+<div class="tile"><span>50-lb bags</span><b id="sodaBags">3.07</b></div>
+<div class="tile"><span>Goal pH</span><b>7.6</b></div>
+</div>
+</div>
+</div>
+</div>
+<div class="formula" id="sodaFormula"></div>
+<div class="note"><strong>Model limitation:</strong> Soda ash is scaled from 3.0 lb per 10,000 gallons for pH 6.0 → 7.6. Values below pH 6.0 are extrapolated from that same proportional model. Verify very low readings with a calibrated meter and use staged additions.</div>
 </section>
 
-<section class="card">
-<h2>Estimated Dose</h2>
+<section class="panel" id="fcPanel">
+<div class="grid">
+<div class="card">
+<h2>Chlorine Feed Inputs</h2>
 <div class="card-body">
-<div class="dose">
-<small>Soda ash required</small>
-<div class="big" id="doseLb">153.5 lb</div>
-<div class="sub" id="doseMixed">153 lb 8.4 oz</div>
+<div class="field"><label for="fcPool">Body of Water</label><select id="fcPool"><option value="0" selected>501 — Cutback Cove</option>
+<option value="1">502 — Big Surf Shores</option>
+<option value="2">503 — Omaka Rocka</option>
+<option value="3">504 — Katas Kookaburra</option>
+<option value="4">505 — Roa&#x27;s Rapids</option>
+<option value="5">506 — Whanau Way</option>
+<option value="6">507 — Walkabout Waters</option>
+<option value="7">508 — Ray Rush/Whahalla Wave</option>
+<option value="8">509 — Loggerhead/Tassie</option>
+<option value="9">510 — Dolphin Plunge</option>
+<option value="10">520 — Ihu Breakaway Falls</option>
+<option value="11">530 — Taumata Racer</option>
+<option value="12">540 — KareKareKurl</option>
+<option value="13">550 — Riptide</option>
+<option value="14">Infinity Falls 1</option>
+<option value="15">Infinity Falls 2</option>
+<option value="16">Kraken</option>
+<option value="17">Manta Pond</option>
+<option value="18">Main Gate</option>
+<option value="19">Journey to Atlantis</option>
+<option value="20">Sesame</option>
+<option value="21">Pearl</option>
+<option value="22">Tropical River/Resort Pool</option>
+<option value="23">Freshwater Oasis</option></select></div>
+<div class="field"><label for="desiredFC">Desired FC Increase (ppm)</label><input id="desiredFC" type="number" min="0.1" max="20" step="0.1" value="3.0" inputmode="decimal"></div>
+<div class="readout"><span>Pool number</span><strong id="fcId">501</strong></div>
+<div class="readout"><span>Volume</span><strong id="fcVolume">511,740 gal</strong></div>
+<div class="readout"><span>PPM per 5-min feed</span><strong id="fcRate">0.42 ppm</strong></div>
+<div class="readout"><span>Feed rate basis</span><strong>5 minutes</strong></div>
 </div>
-<div class="stages">
-<div class="stage"><span>25% staged addition</span><b id="stage25">38.4 lb</b></div>
-<div class="stage"><span>50% staged addition</span><b id="stage50">76.8 lb</b></div>
-<div class="stage"><span>50-lb bags</span><b id="bags">3.07</b></div>
-<div class="stage"><span>Product</span><b>Soda ash</b></div>
+</div>
+
+<div class="card">
+<h2>Required Manual Feed</h2>
+<div class="card-body">
+<div class="result"><small>Manual feed time</small><div class="big" id="fcTime">35 min 43 sec</div><div class="sub" id="fcDecimal">35.71 minutes</div></div>
+<div class="tiles">
+<div class="tile"><span>Desired FC rise</span><b id="fcDesiredTile">3.0 ppm</b></div>
+<div class="tile"><span>Feed cycles</span><b id="fcCycles">7.14</b></div>
+<div class="tile"><span>Half-time check</span><b id="fcHalf">17 min 51 sec</b></div>
+<div class="tile"><span>Reference interval</span><b>5 min</b></div>
 </div>
 </div>
+</div>
+</div>
+<div class="formula" id="fcFormula"></div>
+<div class="note"><strong>Assumption:</strong> FC gain scales linearly with feed duration and feed rate remains constant. Actual FC rise may be reduced by chlorine demand, sunlight, mixing, or concurrent chemical feed.</div>
 </section>
-</div>
-<div class="formula" id="formulaText"></div>
-<div class="warning"><strong>Model limitation:</strong> This calculator scales from 3.0 lb per 10,000 gallons for pH 6.0 → 7.6. Use the result as a staged estimate and retest before completing large additions.</div>
-<div class="status" id="status">Calculator active</div>
-</main>
+
+<div class="footer">Offline-capable PWA • Add to Home Screen from Safari</div>
 </div>
 
 <script>
-(function() {
-  var pools = [{"id": "501", "name": "Cutback Cove", "volume": 511740}, {"id": "502", "name": "Big Surf Shores", "volume": 507477}, {"id": "503", "name": "Omaka Rocka", "volume": 22709}, {"id": "504", "name": "Katas Kookaburra", "volume": 79215}, {"id": "505", "name": "Roa's Rapids", "volume": 937210}, {"id": "506", "name": "Whanau Way", "volume": 94930}, {"id": "507", "name": "Walkabout Waters", "volume": 170000}, {"id": "508", "name": "Ray Rush/Whahalla Wave", "volume": 92500}, {"id": "509", "name": "Loggerhead/Tassie", "volume": 397700}, {"id": "510", "name": "Dolphin Plunge", "volume": 22326}, {"id": "520", "name": "Ihu Breakaway Falls", "volume": 16128}, {"id": "530", "name": "Taumata Racer", "volume": 12342}, {"id": "540", "name": "KareKareKurl", "volume": 15000}, {"id": "550", "name": "Riptide", "volume": 21000}, {"id": "\u2014", "name": "Infinity Falls 1", "volume": 600000}, {"id": "\u2014", "name": "Infinity Falls 2", "volume": 300000}, {"id": "\u2014", "name": "Kraken", "volume": 48000}, {"id": "\u2014", "name": "Manta Pond", "volume": 300000}, {"id": "\u2014", "name": "Main Gate", "volume": 800000}, {"id": "\u2014", "name": "Journey to Atlantis", "volume": 800000}, {"id": "\u2014", "name": "Sesame", "volume": 8800}, {"id": "\u2014", "name": "Pearl", "volume": 50000}, {"id": "\u2014", "name": "Tropical River/Resort Pool", "volume": 1200000}, {"id": "\u2014", "name": "Freshwater Oasis", "volume": 932000}];
-  var select = document.getElementById('pool');
-  var phInput = document.getElementById('ph');
-  var lastIndex = -1;
-  var lastPH = '';
+(function(){
+const pools=[{"id": "501", "name": "Cutback Cove", "volume": 511740, "fc5": 0.42}, {"id": "502", "name": "Big Surf Shores", "volume": 507477, "fc5": 0.42}, {"id": "503", "name": "Omaka Rocka", "volume": 22709, "fc5": 0.5}, {"id": "504", "name": "Katas Kookaburra", "volume": 79215, "fc5": 1.35}, {"id": "505", "name": "Roa's Rapids", "volume": 937210, "fc5": 0.34}, {"id": "506", "name": "Whanau Way", "volume": 94930, "fc5": 1.12}, {"id": "507", "name": "Walkabout Waters", "volume": 170000, "fc5": 1.25}, {"id": "508", "name": "Ray Rush/Whahalla Wave", "volume": 92500, "fc5": 0.58}, {"id": "509", "name": "Loggerhead/Tassie", "volume": 397700, "fc5": 0.54}, {"id": "510", "name": "Dolphin Plunge", "volume": 22326, "fc5": 0.72}, {"id": "520", "name": "Ihu Breakaway Falls", "volume": 16128, "fc5": 1.0}, {"id": "530", "name": "Taumata Racer", "volume": 12342, "fc5": 1.31}, {"id": "540", "name": "KareKareKurl", "volume": 15000, "fc5": 3.56}, {"id": "550", "name": "Riptide", "volume": 21000, "fc5": 0.77}, {"id": "\u2014", "name": "Infinity Falls 1", "volume": 600000, "fc5": 0.18}, {"id": "\u2014", "name": "Infinity Falls 2", "volume": 300000, "fc5": 0.36}, {"id": "\u2014", "name": "Kraken", "volume": 48000, "fc5": 1.89}, {"id": "\u2014", "name": "Manta Pond", "volume": 300000, "fc5": 0.3}, {"id": "\u2014", "name": "Main Gate", "volume": 800000, "fc5": 0.34}, {"id": "\u2014", "name": "Journey to Atlantis", "volume": 800000, "fc5": 0.27}, {"id": "\u2014", "name": "Sesame", "volume": 8800, "fc5": 1.83}, {"id": "\u2014", "name": "Pearl", "volume": 50000, "fc5": 0.32}, {"id": "\u2014", "name": "Tropical River/Resort Pool", "volume": 1200000, "fc5": 0.36}, {"id": "\u2014", "name": "Freshwater Oasis", "volume": 932000, "fc5": 0.34}];
 
-  function update() {
-    var idx = parseInt(select.value, 10);
-    if (!isFinite(idx) || !pools[idx]) idx = select.selectedIndex;
-    if (!pools[idx]) idx = 0;
+function fmtTime(mins){
+  let total=Math.max(0,Math.round(mins*60));
+  let h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
+  return (h?h+' hr ':'')+m+' min '+s+' sec';
+}
 
-    var pool = pools[idx];
-    var currentPH = parseFloat(phInput.value);
-    if (!isFinite(currentPH)) currentPH = 6.0;
-    currentPH = Math.max(5.0, Math.min(7.6, currentPH));
+window.showTab=function(name){
+  document.getElementById('sodaPanel').classList.toggle('active',name==='soda');
+  document.getElementById('fcPanel').classList.toggle('active',name==='fc');
+  document.getElementById('tabSoda').classList.toggle('active',name==='soda');
+  document.getElementById('tabFC').classList.toggle('active',name==='fc');
+  localStorage.setItem('poolToolsTab',name);
+};
 
-    var shift = Math.max(0, 7.6 - currentPH);
-    var rate = 3.0 * (shift / 1.6);
-    var dose = (pool.volume / 10000) * rate;
-    var whole = Math.floor(dose);
-    var oz = (dose - whole) * 16;
+function selectedPool(selectId){
+  const sel=document.getElementById(selectId);
+  let i=parseInt(sel.value,10);
+  return pools[i]||pools[0];
+}
 
-    document.getElementById('poolId').textContent = pool.id;
-    document.getElementById('volume').textContent = pool.volume.toLocaleString() + ' gal';
-    document.getElementById('shift').textContent = shift.toFixed(1) + ' units';
-    document.getElementById('rate').textContent = rate.toFixed(2) + ' lb/10k gal';
-    document.getElementById('doseLb').textContent =
-      dose.toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1}) + ' lb';
-    document.getElementById('doseMixed').textContent =
-      whole.toLocaleString() + ' lb ' + oz.toFixed(1) + ' oz';
-    document.getElementById('stage25').textContent =
-      (dose * .25).toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1}) + ' lb';
-    document.getElementById('stage50').textContent =
-      (dose * .5).toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1}) + ' lb';
-    document.getElementById('bags').textContent = (dose / 50).toFixed(2);
-    document.getElementById('formulaText').textContent =
-      'Dose = (' + pool.volume.toLocaleString() + ' ÷ 10,000) × 3.0 × ((7.6 − ' +
-      currentPH.toFixed(1) + ') ÷ 1.6) = ' + dose.toFixed(2) + ' lb';
+function setInvalidSoda(message){
+  document.getElementById('currentPH').classList.add('invalid');
+  document.getElementById('phError').textContent=message;
+  document.getElementById('phError').classList.add('show');
+  document.getElementById('sodaResult').classList.add('invalid');
+  document.getElementById('phShift').textContent='—';
+  document.getElementById('sodaRate').textContent='—';
+  document.getElementById('sodaDose').textContent='Invalid pH';
+  document.getElementById('sodaMixed').textContent='No dose calculated';
+  document.getElementById('soda25').textContent='—';
+  document.getElementById('soda50').textContent='—';
+  document.getElementById('sodaBags').textContent='—';
+  document.getElementById('sodaFormula').textContent='Enter a valid current pH to calculate a dose.';
+}
 
-    lastIndex = select.selectedIndex;
-    lastPH = phInput.value;
+function clearInvalidSoda(){
+  document.getElementById('currentPH').classList.remove('invalid');
+  document.getElementById('phError').classList.remove('show');
+  document.getElementById('sodaResult').classList.remove('invalid');
+}
+
+function updateSoda(){
+  const p=selectedPool('sodaPool');
+  const raw=document.getElementById('currentPH').value.trim();
+  const ph=parseFloat(raw);
+
+  document.getElementById('sodaId').textContent=p.id;
+  document.getElementById('sodaVolume').textContent=p.volume.toLocaleString()+' gal';
+
+  if(raw==='' || !isFinite(ph)){
+    setInvalidSoda('Enter a numeric pH between 4.0 and 7.6.');
+    return;
+  }
+  if(ph<4.0 || ph>7.6){
+    setInvalidSoda('Supported range is pH 4.0–7.6.');
+    return;
   }
 
-  // Standard browser events.
-  select.addEventListener('change', update);
-  select.addEventListener('input', update);
-  phInput.addEventListener('input', update);
-  phInput.addEventListener('change', update);
+  clearInvalidSoda();
+  const shift=7.6-ph;
+  const rate=3.0*(shift/1.6);
+  const dose=(p.volume/10000)*rate;
+  const whole=Math.floor(dose),oz=(dose-whole)*16;
 
-  // iOS Quick Look / embedded preview fallback:
-  // detect selector or pH changes even when change/input events are not delivered.
-  setInterval(function() {
-    if (select.selectedIndex !== lastIndex || phInput.value !== lastPH) update();
-  }, 200);
+  document.getElementById('phShift').textContent=shift.toFixed(1)+' units';
+  document.getElementById('sodaRate').textContent=rate.toFixed(2)+' lb/10k gal';
+  document.getElementById('sodaDose').textContent=dose.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
+  document.getElementById('sodaMixed').textContent=whole.toLocaleString()+' lb '+oz.toFixed(1)+' oz';
+  document.getElementById('soda25').textContent=(dose*.25).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
+  document.getElementById('soda50').textContent=(dose*.5).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+' lb';
+  document.getElementById('sodaBags').textContent=(dose/50).toFixed(2);
+  document.getElementById('sodaFormula').textContent='Dose = ('+p.volume.toLocaleString()+' ÷ 10,000) × 3.0 × ((7.6 − '+ph.toFixed(1)+') ÷ 1.6) = '+dose.toFixed(2)+' lb';
+}
 
-  // Also refresh whenever the page becomes visible again after the iOS picker closes.
-  document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) update();
+function updateFC(){
+  const p=selectedPool('fcPool');
+  let desired=parseFloat(document.getElementById('desiredFC').value);
+  if(!isFinite(desired))desired=3.0;
+  desired=Math.max(.1,Math.min(20,desired));
+  const cycles=desired/p.fc5;
+  const mins=cycles*5;
+  document.getElementById('fcId').textContent=p.id;
+  document.getElementById('fcVolume').textContent=p.volume.toLocaleString()+' gal';
+  document.getElementById('fcRate').textContent=p.fc5.toFixed(2)+' ppm';
+  document.getElementById('fcTime').textContent=fmtTime(mins);
+  document.getElementById('fcDecimal').textContent=mins.toFixed(2)+' minutes';
+  document.getElementById('fcDesiredTile').textContent=desired.toFixed(1)+' ppm';
+  document.getElementById('fcCycles').textContent=cycles.toFixed(2);
+  document.getElementById('fcHalf').textContent=fmtTime(mins/2);
+  document.getElementById('fcFormula').textContent='Feed time = ('+desired.toFixed(2)+' ÷ '+p.fc5.toFixed(2)+') × 5 = '+mins.toFixed(2)+' minutes';
+}
+
+['sodaPool','currentPH'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('change',updateSoda);
+  el.addEventListener('input',updateSoda);
+});
+['fcPool','desiredFC'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('change',updateFC);
+  el.addEventListener('input',updateFC);
+});
+
+setInterval(function(){updateSoda();updateFC();},500);
+
+const saved=localStorage.getItem('poolToolsTab');
+if(saved==='fc')showTab('fc');
+updateSoda();
+updateFC();
+
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./service-worker.js').catch(function(){});
   });
-  window.addEventListener('focus', update);
-  window.addEventListener('pageshow', update);
-
-  update();
-
-  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./service-worker.js').catch(function() {});
-    });
-  }
+}
 })();
 </script>
 </body>
